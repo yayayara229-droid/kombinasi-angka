@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Split 10000 Kombinasi</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+
+    .section {
+      border: 1px solid black;
+      margin-bottom: 20px;
+      padding: 10px;
+    }
+
+    .item {
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- SCREEN 1 -->
+<div id="screen1">
+  <h2>Masukkan Jumlah Sekat</h2>
+  <input id="inputNum" type="number" min="1">
+  <button onclick="generate()">Next</button>
+</div>
+
+<!-- SCREEN 2 -->
+<div id="screen2" style="display:none">
+  <h2>Hasil Sekat</h2>
+  <div id="output"></div>
+</div>
+
+<script>
+
+// generate 10000 kombinasi unik
+function generateAll() {
+  let set = new Set();
+
+  while (set.size < 10000) {
+    let combo = [];
+
+    while (combo.length < 4) {
+      let num = Math.floor(Math.random() * 100) + 1;
+      if (!combo.includes(num)) combo.push(num);
+    }
+
+    set.add(combo.join("-"));
+  }
+
+  return Array.from(set);
+}
+
+function generate() {
+  let n = parseInt(document.getElementById("inputNum").value);
+  if (!n || n <= 0) return;
+
+  let data = generateAll();
+
+  let chunk = Math.floor(10000 / n);
+
+  let names = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+  let html = "";
+
+  for (let i = 0; i < n; i++) {
+    let part = data.slice(i * chunk, (i + 1) * chunk);
+
+    html += `<div class="section">
+      <h3>Bagian ${names[i]}</h3>
+      <div>Total: ${part.length}</div>
+    `;
+
+    // tampilkan preview 5 saja biar tidak berat
+    for (let j = 0; j < Math.min(5, part.length); j++) {
+      html += `<div class="item">${part[j]}</div>`;
+    }
+
+    html += `</div>`;
+  }
+
+  document.getElementById("screen1").style.display = "none";
+  document.getElementById("screen2").style.display = "block";
+  document.getElementById("output").innerHTML = html;
+}
+
+</script>
+
+</body>
+</html>
