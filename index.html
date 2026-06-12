@@ -1,89 +1,53 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Split 10000 Kombinasi</title>
+  <title>10000 Kombinasi Literal</title>
   <style>
     body { font-family: Arial; padding: 20px; }
-
-    .section {
-      border: 1px solid black;
-      margin-bottom: 20px;
-      padding: 10px;
-    }
-
-    .item {
-      font-size: 12px;
-    }
+    .box { border: 1px solid #333; margin: 10px; padding: 10px; max-height: 400px; overflow-y: scroll; }
+    .item { font-size: 12px; display: inline-block; width: 60px; }
   </style>
 </head>
 <body>
 
-<!-- SCREEN 1 -->
-<div id="screen1">
-  <h2>Masukkan Jumlah Sekat</h2>
-  <input id="inputNum" type="number" min="1">
-  <button onclick="generate()">Next</button>
-</div>
+<h2>Masukkan jumlah bagian</h2>
+<input id="num" type="number" min="1" max="26">
+<button onclick="run()">Next</button>
 
-<!-- SCREEN 2 -->
-<div id="screen2" style="display:none">
-  <h2>Hasil Sekat</h2>
-  <div id="output"></div>
-</div>
+<div id="result"></div>
 
 <script>
-
-// generate 10000 kombinasi unik
-function generateAll() {
-  let set = new Set();
-
-  while (set.size < 10000) {
-    let combo = [];
-
-    while (combo.length < 4) {
-      let num = Math.floor(Math.random() * 100) + 1;
-      if (!combo.includes(num)) combo.push(num);
-    }
-
-    set.add(combo.join("-"));
-  }
-
-  return Array.from(set);
+function pad(num) {
+  return String(num).padStart(4, "0");
 }
 
-function generate() {
-  let n = parseInt(document.getElementById("inputNum").value);
+function run() {
+  let n = parseInt(document.getElementById("num").value);
   if (!n || n <= 0) return;
 
-  let data = generateAll();
-
-  let chunk = Math.floor(10000 / n);
-
-  let names = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
+  let total = 10000;
+  let chunk = Math.floor(total / n);
   let html = "";
 
   for (let i = 0; i < n; i++) {
-    let part = data.slice(i * chunk, (i + 1) * chunk);
+    let start = i * chunk + 1;
+    let end = (i + 1) * chunk;
 
-    html += `<div class="section">
-      <h3>Bagian ${names[i]}</h3>
-      <div>Total: ${part.length}</div>
-    `;
+    // terakhir bisa ambil sisa
+    if (i === n-1) end = total;
 
-    // tampilkan preview 5 saja biar tidak berat
-    for (let j = 0; j < Math.min(5, part.length); j++) {
-      html += `<div class="item">${part[j]}</div>`;
+    html += `<div class="box">
+      <h3>Bagian ${String.fromCharCode(65 + i)}</h3>`;
+
+    for (let j = start; j <= end; j++) {
+      html += `<div class="item">${pad(j)}</div>`;
     }
 
     html += `</div>`;
   }
 
-  document.getElementById("screen1").style.display = "none";
-  document.getElementById("screen2").style.display = "block";
-  document.getElementById("output").innerHTML = html;
+  document.getElementById("result").innerHTML = html;
 }
-
 </script>
 
 </body>
